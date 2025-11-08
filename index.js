@@ -2,6 +2,7 @@ import express from 'express';
 import axios from 'axios';
 import cors from 'cors';
 import path from 'path';
+import morgan from 'morgan';
 import { fileURLToPath } from 'url';
 
 // Fix for __dirname in ES modules
@@ -11,9 +12,24 @@ const __dirname = path.dirname(__filename);
 const app = express();
 app.use(cors());
 
-// Serve index.html at root
+app.use(express.json());
+app.use(cors({
+  origin: process.env.ALLOWED_ORIGINS?.split(",") || "*"
+}));
+
+app.use(morgan('dev'));
+app.use(express.static(path.join(__dirname, 'public')));
+
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
+});
+app.use('/public', express.static(path.join(__dirname, 'public')));
+
+app.get('/imagine', (req, res) => {
+  res.sendFile(path.join(__dirname, 'imagine.html'));
+});
+app.get('/chat', (req, res) => {
+  res.sendFile(path.join(__dirname, 'chat.html'));
 });
 
 const notAllowed = ["subash", "baniya"];
@@ -82,6 +98,71 @@ app.get('/api/imagine', async (req, res) => {
           : "Failed to generate images. Please try again later.",
     });
   }
+});
+
+app.get("/api/chat", async (req, res) => {
+  const prompt = req.query.prompt;
+
+  if (!prompt) {
+    return res.status(400).json({
+      error: "The 'prompt' query parameter is required."
+    });
+  }
+
+  try {
+    const response = await axios.post(
+      "https://api.deepinfra.com/v1/openai/chat/completions",
+      {
+        model: "meta-llama/Llama-3.3-70B-Instruct-Turbo",
+        messages: [
+          {
+            role: "system",
+            content: `You are a friendly AI Assistant, providing short, human-like, and engaging responses.`
+          },
+          { role: "user", content: prompt }
+        ],
+        stream: false
+      },
+      {
+        headers: {
+          "accept": "application/json",
+          "content-type": "application/json",
+          "x-deepinfra-source": "web-embed",
+          "Referer": "https://deepinfra.com/"
+        }
+      }
+    );
+
+    res.json(response.data);
+  } catch (error) {
+    res.status(500).json({
+      error: process.env.NODE_ENV === "development"
+        ? error.message
+        : "Chat request failed"
+    });
+  }
+});
+
+app.use((req, res, next) => {
+  const blocked = [
+    '/index.js',
+    '/server.js',
+    '/.env',
+    '/package.json',
+    '/package-lock.json',
+    '/node_modules',
+  ];
+
+  if (blocked.some(f => req.url.startsWith(f))) {
+    return res.status(404).sendFile(
+      path.join(__dirname, 'public', '404.html'),
+      (err) => {
+        if (err) res.status(404).send("404 - Not Found");
+      }
+    );
+  }
+
+  next();
 });
 
 const PORT = process.env.PORT || 5000;
