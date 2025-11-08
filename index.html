@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>esc</title>
+
+  <!-- Font Awesome for icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: "Poppins", sans-serif;
+      background: #000;
+      color: #f3f4f6;
+      margin: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: flex-start;
+      min-height: 100vh;
+      overflow-y: auto;
+      padding: 2rem 1rem;
+    }
+
+    h1 {
+      font-size: 2rem;
+      margin-bottom: 1rem;
+      color: #fff;
+      font-weight: 600;
+      text-align: center;
+    }
+
+    .input-box {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.5rem;
+      width: 100%;
+      max-width: 700px;
+      margin-bottom: 1.5rem;
+    }
+
+    input {
+      flex: 1;
+      padding: 0.8rem 1rem;
+      border-radius: 30px;
+      border: 2.5px solid darkred;
+      font-size: 1rem;
+      background: #111;
+      color: #fff;
+      outline: none;
+      transition: all 0.2s;
+    }
+
+    input:focus {
+      border-color: darkred;
+      box-shadow: 0 0 5px rgba(99, 102, 241, 0.3);
+    }
+
+    button {
+      background: darkred;
+      color: #fff;
+      border: none;
+      border-radius: 30px;
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    button:hover {
+      background: #A52A2A;
+      transform: translateY(-1px);
+    }
+
+    button:disabled {
+      opacity: 0.6;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .error {
+      color: #ef4444;
+      margin-bottom: 1rem;
+    }
+
+    .loading {
+      margin: 1rem 0;
+      font-size: 1rem;
+      color: #9ca3af;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .spinner {
+      width: 20px;
+      height: 20px;
+      border: 3px solid #222;
+      border-top-color: #6366f1;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg);
+      }
+    }
+
+    /* IMAGE LAYOUT */
+    .images-layout {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+      max-width: 950px;
+    }
+
+    .top-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 1rem;
+      width: 100%;
+    }
+
+    .bottom-row {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 100%;
+    }
+
+    .image-card {
+      position: relative;
+      background: #111;
+      border-radius: 16px;
+      overflow: hidden;
+      flex: 1;
+      max-width: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      transition: transform 0.3s ease;
+    }
+
+    .image-card img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+      border-radius: 16px;
+      display: block;
+    }
+
+    /* RATIOS */
+    .square {
+      aspect-ratio: 1 / 1;
+    }
+
+    .wide {
+      aspect-ratio: 16 / 9;
+      width: 100%;
+    }
+
+    /* DOWNLOAD ICON */
+    .download-btn {
+      position: absolute;
+      bottom: 12px;
+      right: 12px;
+      background: transparent !important;
+      border: none !important;
+      cursor: pointer;
+      opacity: 0;
+      transition: opacity 0.3s ease, transform 0.1s ease;
+    }
+
+    .download-btn i {
+      color: #000;
+      font-size: 1.5rem;
+      background: transparent !important;
+      transition: transform 0.1s ease;
+      pointer-events: none;
+    }
+
+    .image-card:hover .download-btn {
+      opacity: 1;
+    }
+
+    /* Bump click effect */
+    .download-btn:active i {
+      transform: scale(0.85);
+    }
+
+    @media (max-width: 700px) {
+      .top-row {
+        flex-direction: column;
+      }
+    }
+  </style>
+</head>
+<body>
+  <h1>esc</h1>
+
+  <div class="input-box">
+    <input id="promptInput" type="text" placeholder="let’s make something amazing..." autocomplete="off" spellcheck="false" />
+    <button id="generateBtn">generate</button>
+  </div>
+
+  <div id="error" class="error"></div>
+  <div id="loading" class="loading" style="display:none;">
+    <div class="spinner"></div> Generating images...
+  </div>
+
+  <div class="images-layout" id="imagesLayout"></div>
+
+  <script>
+    const promptInput = document.getElementById("promptInput");
+    const generateBtn = document.getElementById("generateBtn");
+    const errorEl = document.getElementById("error");
+    const loadingEl = document.getElementById("loading");
+    const imagesLayout = document.getElementById("imagesLayout");
+
+    async function generateImages() {
+      const prompt = promptInput.value.trim();
+      if (!prompt) {
+        errorEl.textContent = "Please enter a prompt.";
+        return;
+      }
+
+      errorEl.textContent = "";
+      loadingEl.style.display = "flex";
+      generateBtn.disabled = true;
+
+      try {
+        const response = await fetch(`/api/imagine?prompt=${encodeURIComponent(prompt)}`);
+        const data = await response.json();
+
+        if (!response.ok) throw new Error(data.error || "Failed to generate images.");
+
+        // Clear and re-add layout
+        imagesLayout.innerHTML = "";
+
+        const topRow = document.createElement("div");
+        topRow.className = "top-row";
+
+        for (let i = 0; i < 2; i++) {
+          const card = createImageCard(data.images[i], "square");
+          topRow.appendChild(card);
+        }
+
+        const bottomRow = document.createElement("div");
+        bottomRow.className = "bottom-row";
+        bottomRow.appendChild(createImageCard(data.images[2], "wide"));
+
+        imagesLayout.appendChild(topRow);
+        imagesLayout.appendChild(bottomRow);
+      } catch (err) {
+        errorEl.textContent = err.message || "Error generating images.";
+      } finally {
+        loadingEl.style.display = "none";
+        generateBtn.disabled = false;
+      }
+    }
+
+    function createImageCard(src, ratioClass) {
+      const div = document.createElement("div");
+      div.className = `image-card ${ratioClass}`;
+
+      const img = document.createElement("img");
+      img.src = src;
+      img.alt = "Generated image";
+
+      const btn = document.createElement("button");
+      btn.className = "download-btn";
+      btn.innerHTML = `<i class="fa-solid fa-download"></i>`;
+      btn.addEventListener("click", () => downloadImage(src));
+
+      div.appendChild(img);
+      div.appendChild(btn);
+      return div;
+    }
+
+    function downloadImage(src) {
+      const link = document.createElement("a");
+      link.href = src;
+      link.download = `ai-image-${Date.now()}.jpg`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+    }
+
+    // Press Enter to generate
+    promptInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") generateImages();
+    });
+
+    generateBtn.addEventListener("click", generateImages);
+  </script>
+</body>
+</html>
