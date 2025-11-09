@@ -11,9 +11,7 @@
   <meta property="og:url" content="/" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
-  <!-- Favicon -->
   <link rel="icon" href="https://i.imgur.com/9GGNGm1.jpeg" type="image/jpeg" />
-  <!-- Font Awesome for icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
@@ -26,8 +24,8 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      padding: 2rem 1rem;
       min-height: 100vh;
+      padding-bottom: 7rem; /* space for bottom input */
     }
 
     @font-face {
@@ -40,7 +38,7 @@
 
     h1 {
       text-align: center;
-      margin: 1rem 0;
+      margin: 3rem 0 2rem;
       color: #fff;
       font-family: "Athemi", sans-serif;
       font-weight: normal;
@@ -57,44 +55,68 @@
       transition: color 0.35s ease, text-shadow 0.35s ease; 
     }
 
+    /* Default glow for “to” */
+    h1 span:nth-child(2) {
+      color: #ff4c4c;
+      text-shadow: 0 0 4px rgba(255,50,50,0.5), 0 0 8px rgba(255,50,50,0.25);
+    }
+
+    /* Hover behavior: swap glow */
     h1 span:hover {
       color: #ff4c4c;
       text-shadow: 0 0 4px rgba(255,50,50,0.5), 0 0 8px rgba(255,50,50,0.25);
     }
 
+    h1 span:nth-child(2):hover {
+      color: #fff;
+      text-shadow: none;
+    }
+
+    /* Input at bottom */
     .input-box {
+      position: fixed;
+      bottom: 1.5rem;
+      left: 50%;
+      transform: translateX(-50%);
       display: flex;
       justify-content: center;
       align-items: center;
-      gap: 0.5rem;
       width: 100%;
       max-width: 700px;
-      margin-bottom: 1.5rem;
+      padding: 0 1rem;
+      z-index: 50;
+      background: none; /* remove black background */
     }
 
+    /* Frosted glass transparent input */
     input {
       flex: 1;
       padding: 0.8rem 1rem;
       border-radius: 30px;
       border: 2.5px solid #8b0000;
       font-size: 1rem;
-      background: #111;
       color: #fff;
       outline: none;
-      transition: all 0.25s;
+      text-align: center;
+      background: rgba(255, 255, 255, 0.08); /* transparent white layer */
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
+      transition: all 0.3s ease;
+      box-shadow: 0 0 8px rgba(255, 0, 0, 0.15);
     }
 
-    input:focus { border-color: darkred; }
+    /* Glow on focus */
+    input:focus {
+      border-color: darkred;
+    }
 
     .error { color: #ef4444; margin-bottom: 1rem; }
 
-    /* Loader animation */
     .loading {
       display: flex;
       justify-content: center;
       align-items: center;
-      margin: 1rem 0;
-      margin-bottom: 3rem;
+      margin: 1rem 0 3rem;
       height: 60px;
     }
 
@@ -186,16 +208,16 @@
 <body>
   <h1><span>Text</span> <span>to</span> <span>Image</span></h1>
 
-  <div class="input-box">
-    <input id="promptInput" type="text" placeholder="let’s make something amazing..." autocomplete="off" spellcheck="false" />
-  </div>
-
   <div id="error" class="error"></div>
   <div id="loading" class="loading" style="display:none;">
     <span class="loader"></span>
   </div>
 
   <div class="images-layout" id="imagesLayout"></div>
+
+  <div class="input-box">
+    <input id="promptInput" type="text" placeholder="Let’s make something amazing..." autocomplete="off" spellcheck="false" />
+  </div>
 
   <script>
     const promptInput = document.getElementById("promptInput");

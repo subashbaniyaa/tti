@@ -14,6 +14,7 @@
   <!-- Favicon -->
   <link rel="icon" href="https://i.imgur.com/9GGNGm1.jpeg" type="image/jpeg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+
   <style>
     * { box-sizing: border-box; }
 
@@ -56,7 +57,7 @@
       display: flex;
       justify-content: center;
       gap: 0.2em;
-      user-select: none; /* make unselectable */
+      user-select: none;
       -webkit-user-select: none;
       -moz-user-select: none;
       -ms-user-select: none;
@@ -127,31 +128,41 @@
 
     .ai-msg:hover .copy-btn { opacity: 1; }
 
+    /* ---- Input Area ---- */
     .input-area {
       display: flex;
       align-items: center;
-      gap: 0.5rem;
-      padding: 0.5rem 1rem;
-      border-top: 1px solid #222;
-      background: #000;
+      justify-content: center;
+      padding: 1rem;
+      background: transparent; /* remove background panel */
       flex-shrink: 0;
     }
 
     .input-area input {
       flex: 1;
+      max-width: 700px;
       padding: 0.8rem 1rem;
       border-radius: 30px;
-      border: 2.5px solid darkred;
-      background: #111;
+      border: 2.5px solid #8b0000;
+      background: rgba(255, 255, 255, 0.08); /* frosted glass */
+      backdrop-filter: blur(12px) saturate(180%);
+      -webkit-backdrop-filter: blur(12px) saturate(180%);
       color: #fff;
       outline: none;
       font-size: 1rem;
-      transition: all 0.2s;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 8px rgba(255, 0, 0, 0.15);
+      text-align: center; /* center text & placeholder */
+    }
+
+    .input-area input::placeholder {
+      color: #ddd;
+      opacity: 0.8;
+      text-align: center;
     }
 
     .input-area input:focus {
       border-color: darkred;
-      box-shadow: 0 0 5px rgba(99, 102, 241, 0.3);
     }
 
     .typing-dots {
@@ -179,20 +190,18 @@
 </head>
 <body>
   <div class="chat-wrapper">
-    <h1>
-       <span>Ai</span> <span>Chat</span>
-    </h1>
+    <h1><span>Ai</span> <span>Chat</span></h1>
+
     <div class="chat-container" id="chatContainer"></div>
 
     <div class="input-area">
-      <input id="promptInput" type="text" placeholder="Type a message..." autocomplete="off" spellcheck="false"/>
+      <input id="promptInput" type="text" placeholder="Start chatting..." autocomplete="off" spellcheck="false"/>
     </div>
   </div>
 
   <script>
     const promptInput = document.getElementById("promptInput");
     const chatContainer = document.getElementById("chatContainer");
-
     let userScrolling = false;
 
     chatContainer.addEventListener("scroll", () => {
