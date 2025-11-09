@@ -3,14 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <title>AI Imagine</title>
-  <meta name="description" content="Docs" />
-  <meta name="author" content="Subash Baniya" />
-  <meta property="og:title" content="subashbaniyaa" />
-  <meta property="og:description" content="Docs" />
-  <meta property="og:image" content="https://i.imgur.com/jWY0hPI.png" />
-  <meta property="og:url" content="/" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
   <link rel="icon" href="https://i.imgur.com/9GGNGm1.jpeg" type="image/jpeg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
@@ -25,7 +18,8 @@
       flex-direction: column;
       align-items: center;
       min-height: 100vh;
-      padding-bottom: 7rem; /* space for bottom input */
+      padding-bottom: 7rem;
+      scroll-behavior: smooth;
     }
 
     @font-face {
@@ -42,27 +36,23 @@
       font-weight: normal;
       font-size: 4.5rem;
       letter-spacing: 0.08em;
-      line-height: 1;
       display: flex;
       justify-content: center;
       gap: 0.2em;
       user-select: none;
     }
 
-    h1 span { 
-      transition: color 0.35s ease, text-shadow 0.35s ease; 
-    }
+    h1 span { transition: color 0.35s ease, text-shadow 0.35s ease; }
 
     /* Default glow for “to” */
     h1 span:nth-child(2) {
       color: #ff4c4c;
-      text-shadow: 0 0 4px rgba(255,50,50,0.5), 0 0 8px rgba(255,50,50,0.25);
+      text-shadow: 0 0 6px rgba(255,50,50,0.6), 0 0 12px rgba(255,50,50,0.3);
     }
 
-    /* Hover swap effect */
     h1 span:hover {
       color: #ff4c4c;
-      text-shadow: 0 0 4px rgba(255,50,50,0.5), 0 0 8px rgba(255,50,50,0.25);
+      text-shadow: 0 0 6px rgba(255,50,50,0.6), 0 0 12px rgba(255,50,50,0.3);
     }
 
     h1 span:nth-child(2):hover {
@@ -86,7 +76,7 @@
       background: none;
     }
 
-    /* Glass input + hover/focus glow */
+    /* Frosted glass input */
     input {
       flex: 1;
       padding: 0.8rem 1rem;
@@ -105,24 +95,22 @@
 
     input::placeholder {
       color: rgba(200, 200, 200, 0.5);
-      font-style: normal;
       font-weight: 400;
     }
 
-    /* Hover: soft glow */
     input:hover {
       box-shadow: 0 0 10px rgba(255, 0, 0, 0.25);
       border-color: rgba(255, 0, 0, 0.7);
     }
 
-    /* Focus: bright glow + scale */
+    /* Focus glow + animation */
     input:focus {
       border-color: #ff1a1a;
-      box-shadow: 0 0 15px rgba(255, 0, 0, 0.35);
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.45);
       transform: scale(1.03);
+      animation: pulseGlow 1.5s ease-in-out infinite;
     }
 
-    /* Error + loading styles */
     .error { color: #ef4444; margin-bottom: 1rem; }
 
     .loading {
@@ -181,6 +169,7 @@
       gap: 1rem;
       width: 100%;
       max-width: 950px;
+      margin-top: 1rem;
     }
 
     .top-row, .bottom-row {
@@ -251,7 +240,6 @@
       try {
         const response = await fetch(`/api/imagine?prompt=${encodeURIComponent(prompt)}`);
         const data = await response.json();
-
         if (!response.ok) throw new Error(data.error || "Failed to generate images.");
 
         imagesLayout.innerHTML = "";
@@ -281,6 +269,8 @@
         imagesLayout.appendChild(topRow);
         imagesLayout.appendChild(bottomRow);
 
+        window.scrollTo({ top: 0, behavior: "smooth" });
+
       } catch (err) {
         errorEl.textContent = err.message || "Error generating images.";
       } finally {
@@ -291,8 +281,10 @@
     promptInput.addEventListener("keydown", e => {
       if (e.key === "Enter") {
         e.preventDefault();
+        // 👇 Scroll to top immediately on Enter
+        window.scrollTo({ top: 0, behavior: "smooth" });
         generateImages();
-        promptInput.blur(); // closes mobile keyboard
+        setTimeout(() => promptInput.blur(), 500); // closes keyboard after scroll starts
       }
     });
   </script>
