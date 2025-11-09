@@ -275,7 +275,13 @@
       }
     }
 
-    promptInput.addEventListener("keydown", e => { if (e.key === "Enter") generateImages(); });
+    promptInput.addEventListener("keydown", e => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        generateImages();
+        promptInput.blur(); // 👈 closes mobile keyboard
+      }
+    });
   </script>
 </body>
 </html>
