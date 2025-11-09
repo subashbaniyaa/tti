@@ -10,6 +10,10 @@
   <style>
     * { box-sizing: border-box; margin:0; padding:0; }
 
+    html {
+      scroll-behavior: smooth;
+    }
+
     body {
       font-family: "Poppins", sans-serif;
       background: #000;
@@ -19,7 +23,6 @@
       align-items: center;
       min-height: 100vh;
       padding-bottom: 7rem;
-      scroll-behavior: smooth;
     }
 
     @font-face {
@@ -76,7 +79,6 @@
       background: none;
     }
 
-    /* Frosted glass input */
     input {
       flex: 1;
       padding: 0.8rem 1rem;
@@ -103,12 +105,16 @@
       border-color: rgba(255, 0, 0, 0.7);
     }
 
-    /* Focus glow + animation */
     input:focus {
       border-color: #ff1a1a;
       box-shadow: 0 0 15px rgba(255, 0, 0, 0.45);
       transform: scale(1.03);
       animation: pulseGlow 1.5s ease-in-out infinite;
+    }
+
+    @keyframes pulseGlow {
+      0%, 100% { box-shadow: 0 0 15px rgba(255,0,0,0.45); }
+      50% { box-shadow: 0 0 25px rgba(255,0,0,0.7); }
     }
 
     .error { color: #ef4444; margin-bottom: 1rem; }
@@ -204,6 +210,7 @@
     @media (max-width: 700px) {
       .top-row { flex-direction: column; }
       h1 { font-size: 3.2rem; }
+      input { font-size: 0.95rem; }
     }
   </style>
 </head>
@@ -269,7 +276,8 @@
         imagesLayout.appendChild(topRow);
         imagesLayout.appendChild(bottomRow);
 
-        window.scrollTo({ top: 0, behavior: "smooth" });
+        // 👇 Smooth scroll to top after images appear
+        setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 100);
 
       } catch (err) {
         errorEl.textContent = err.message || "Error generating images.";
@@ -281,10 +289,15 @@
     promptInput.addEventListener("keydown", e => {
       if (e.key === "Enter") {
         e.preventDefault();
-        // 👇 Scroll to top immediately on Enter
-        window.scrollTo({ top: 0, behavior: "smooth" });
-        generateImages();
-        setTimeout(() => promptInput.blur(), 500); // closes keyboard after scroll starts
+
+        // 👇 Immediately close mobile keyboard
+        promptInput.blur();
+
+        // 👇 Smooth scroll to top instantly
+        setTimeout(() => {
+          window.scrollTo({ top: 0, behavior: "smooth" });
+          generateImages();
+        }, 150);
       }
     });
   </script>
