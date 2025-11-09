@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="UTF-8" />
+    <title>404</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta name="description" content="Page Not Found" />
+    <meta name="author" content="Subash Baniya" />
+    <meta property="og:image" content="https://i.imgur.com/5ezDqvH.png" />
+    <link rel="icon" href="https://i.imgur.com/9GGNGm1.jpeg" type="image/png" />
+
+    <style>
+      /* Load the same custom font */
+      @font-face {
+        font-family: "Athemi";
+        src: url("/athemi.otf") format("opentype");
+        font-weight: normal;
+        font-style: normal;
+      }
+
+      html, body {
+        margin: 0;
+        height: 100%;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: #0f0f10;
+        overflow: hidden;
+        color: #fff;
+        user-select: none;
+      }
+
+      /* Main heading — same style as "Text to Image" */
+      h1 {
+        text-align: center;
+        margin: 0;
+        font-family: "Athemi", sans-serif;
+        font-size: 6rem;
+        font-weight: normal;
+        letter-spacing: 0.08em;
+        line-height: 1;
+        text-rendering: optimizeLegibility;
+        -webkit-font-smoothing: antialiased;
+        display: flex;
+        justify-content: center;
+        gap: 0.3em;
+        cursor: default;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+      }
+
+      /* Each part behaves like separate "word" */
+      h1 span {
+        display: inline-block;
+        color: #fff;
+        transition: color 0.3s ease, text-shadow 0.3s ease;
+        text-shadow: 0 0 6px rgba(255, 255, 255, 0.25);
+      }
+
+      /* Subtle red glow when hovered */
+      h1 span:hover {
+        color: #ff3333;
+        text-shadow: 0 0 6px rgba(255, 50, 50, 0.5);
+      }
+
+      @media (max-width: 600px) {
+        h1 {
+          font-size: 4rem;
+          gap: 0.25em;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1><span>404</span></h1>
+  </body>
+</html>

@@ -31,6 +31,9 @@ app.get('/imagine', (req, res) => {
 app.get('/chat', (req, res) => {
   res.sendFile(path.join(__dirname, 'chat.html'));
 });
+app.get('/404', (req, res) => {
+  res.sendFile(path.join(__dirname, '404.html'));
+});
 
 const notAllowed = ["subash", "baniya"];
 
@@ -146,7 +149,7 @@ app.get("/api/chat", async (req, res) => {
 app.use((req, res, next) => {
   const blocked = [
     '/index.js',
-    '/server.js',
+    '/public/quotes.json',
     '/.env',
     '/package.json',
     '/package-lock.json',
@@ -155,7 +158,7 @@ app.use((req, res, next) => {
 
   if (blocked.some(f => req.url.startsWith(f))) {
     return res.status(404).sendFile(
-      path.join(__dirname, 'public', '404.html'),
+      path.join(__dirname, '404.html'),
       (err) => {
         if (err) res.status(404).send("404 - Not Found");
       }

@@ -27,14 +27,44 @@
       padding: 2rem 1rem;
     }
 
-    h1 {
-      font-size: 2rem;
-      margin-bottom: 1rem;
-      color: #fff;
-      font-weight: 600;
-      text-align: center;
+    @font-face {
+      font-family: "Athemi";
+      src: url("/athemi.otf") format("opentype");
+      font-weight: normal;
+      font-style: normal;
     }
 
+    /* --- HEADLINE --- */
+    h1 {
+      text-align: center;
+      margin: 1rem 0;
+      color: #fff;
+      font-family: "Athemi", sans-serif;
+      font-size: 4.5rem;
+      font-weight: normal;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      justify-content: center;
+      gap: 0.4em;
+      cursor: default;
+    }
+
+    h1 span {
+      display: inline-block;
+      transition: color 0.35s ease, text-shadow 0.35s ease;
+    }
+
+    /* Soft red glow only when hovered */
+    h1 span:hover {
+      color: #ff4c4c;
+      text-shadow: 0 0 4px rgba(255, 50, 50, 0.4),
+                   0 0 8px rgba(255, 50, 50, 0.25);
+    }
+
+    /* --- INPUT AREA --- */
     .input-box {
       display: flex;
       justify-content: center;
@@ -49,32 +79,35 @@
       flex: 1;
       padding: 0.8rem 1rem;
       border-radius: 30px;
-      border: 2.5px solid darkred;
+      border: 2.5px solid #8b0000;
       font-size: 1rem;
       background: #111;
       color: #fff;
       outline: none;
-      transition: all 0.2s;
+      transition: all 0.25s;
     }
 
     input:focus {
       border-color: darkred;
-      box-shadow: 0 0 5px rgba(99, 102, 241, 0.3);
     }
 
+
+    /* --- BUTTONS --- */
     button {
-      background: darkred;
+      background: #8b0000;
       color: #fff;
       border: none;
       border-radius: 30px;
       padding: 0.8rem 1.5rem;
       font-size: 1rem;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: all 0.25s ease;
+      box-shadow: 0 0 6px rgba(255, 50, 50, 0.15);
     }
 
     button:hover {
-      background: #A52A2A;
+      background: #a82626;
+      box-shadow: 0 0 8px rgba(255, 50, 50, 0.25);
       transform: translateY(-1px);
     }
 
@@ -82,8 +115,10 @@
       opacity: 0.6;
       cursor: not-allowed;
       transform: none;
+      box-shadow: none;
     }
 
+    /* --- MESSAGES --- */
     .error {
       color: #ef4444;
       margin-bottom: 1rem;
@@ -102,7 +137,7 @@
       width: 20px;
       height: 20px;
       border: 3px solid #222;
-      border-top-color: #6366f1;
+      border-top-color: #ff4c4c;
       border-radius: 50%;
       animation: spin 1s linear infinite;
     }
@@ -113,7 +148,7 @@
       }
     }
 
-    /* IMAGE LAYOUT */
+    /* --- IMAGE LAYOUT --- */
     .images-layout {
       display: flex;
       flex-direction: column;
@@ -182,10 +217,10 @@
     }
 
     .download-btn i {
-      color: #000;
+      color: #8b0000;
       font-size: 1.5rem;
       background: transparent !important;
-      transition: transform 0.1s ease;
+      transition: color 0.3s ease, text-shadow 0.3s ease, transform 0.1s ease;
       pointer-events: none;
     }
 
@@ -193,7 +228,11 @@
       opacity: 1;
     }
 
-    /* Bump click effect */
+    .download-btn:hover i {
+      color: #ff4c4c;
+      text-shadow: 0 0 4px rgba(255, 50, 50, 0.3);
+    }
+
     .download-btn:active i {
       transform: scale(0.85);
     }
@@ -202,11 +241,17 @@
       .top-row {
         flex-direction: column;
       }
+
+      h1 {
+        font-size: 3.2rem;
+      }
     }
   </style>
 </head>
 <body>
-  <h1>esc</h1>
+  <h1>
+    <span>Text</span> <span>to</span> <span>Image</span>
+  </h1>
 
   <div class="input-box">
     <input id="promptInput" type="text" placeholder="let’s make something amazing..." autocomplete="off" spellcheck="false" />
@@ -244,7 +289,6 @@
 
         if (!response.ok) throw new Error(data.error || "Failed to generate images.");
 
-        // Clear and re-add layout
         imagesLayout.innerHTML = "";
 
         const topRow = document.createElement("div");

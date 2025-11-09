@@ -24,12 +24,41 @@
       background: #000;
     }
 
+    @font-face {
+      font-family: "Athemi";
+      src: url("/athemi.otf") format("opentype");
+      font-weight: normal;
+      font-style: normal;
+    }
+
+    /* --- HEADLINE --- */
     h1 {
       text-align: center;
       margin: 1rem 0;
       color: #fff;
-      font-weight: 600;
-      flex-shrink: 0;
+      font-family: "Athemi", sans-serif;
+      font-size: 4.5rem;
+      font-weight: normal;
+      letter-spacing: 0.08em;
+      line-height: 1;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+      display: flex;
+      justify-content: center;
+      gap: 0.4em;
+      cursor: default;
+    }
+
+    h1 span {
+      display: inline-block;
+      transition: color 0.35s ease, text-shadow 0.35s ease;
+    }
+
+    /* Soft red glow only when hovered */
+    h1 span:hover {
+      color: #ff4c4c;
+      text-shadow: 0 0 4px rgba(255, 50, 50, 0.4),
+                   0 0 8px rgba(255, 50, 50, 0.25);
     }
 
     .chat-container {
@@ -153,7 +182,9 @@
 </head>
 <body>
   <div class="chat-wrapper">
-    <h1>esc</h1>
+    <h1>
+       <span>Ai</span> <span>Chat</span>
+    </h1>
     <div class="chat-container" id="chatContainer"></div>
 
     <div class="input-area">
