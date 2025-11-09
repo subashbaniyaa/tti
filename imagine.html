@@ -17,13 +17,12 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
   <style>
-    * { box-sizing: border-box; }
+    * { box-sizing: border-box; margin:0; padding:0; }
 
     body {
       font-family: "Poppins", sans-serif;
       background: #000;
       color: #f3f4f6;
-      margin: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
@@ -39,7 +38,6 @@
       font-display: block;
     }
 
-    /* Headline */
     h1 {
       text-align: center;
       margin: 1rem 0;
@@ -52,6 +50,7 @@
       display: flex;
       justify-content: center;
       gap: 0.2em;
+      user-select: none;
     }
 
     h1 span { 
@@ -63,7 +62,6 @@
       text-shadow: 0 0 4px rgba(255,50,50,0.5), 0 0 8px rgba(255,50,50,0.25);
     }
 
-    /* Input area */
     .input-box {
       display: flex;
       justify-content: center;
@@ -88,47 +86,58 @@
 
     input:focus { border-color: darkred; }
 
-    button {
-      background: #8b0000;
-      color: #fff;
-      border: none;
-      border-radius: 30px;
-      padding: 0.8rem 1.5rem;
-      font-size: 1rem;
-      cursor: pointer;
-      transition: all 0.25s ease;
-      box-shadow: 0 0 6px rgba(255,50,50,0.15);
-    }
-
-    button:disabled {
-      opacity: 0.6;
-      cursor: not-allowed;
-      box-shadow: none;
-    }
-
-    /* Messages */
     .error { color: #ef4444; margin-bottom: 1rem; }
+
+    /* Loader animation */
     .loading {
-      margin: 1rem 0;
-      font-size: 1rem;
-      color: #9ca3af;
       display: flex;
+      justify-content: center;
       align-items: center;
-      gap: 0.5rem;
+      margin: 1rem 0;
+      height: 60px;
     }
 
-    .spinner {
-      width: 20px;
-      height: 20px;
-      border: 3px solid #222;
-      border-top-color: #ff4c4c;
+    .loader {
+      position: relative;
+      transform: rotateZ(45deg);
+      perspective: 1000px;
       border-radius: 50%;
-      animation: spin 1s linear infinite;
+      width: 48px;
+      height: 48px;
+      color: #fff;
     }
 
-    @keyframes spin { to { transform: rotate(360deg); } }
+    .loader:before,
+    .loader:after {
+      content: '';
+      display: block;
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: inherit;
+      height: inherit;
+      border-radius: 50%;
+      transform: rotateX(70deg);
+      animation: 1s spin linear infinite;
+    }
 
-    /* Image layout */
+    .loader:after {
+      color: #FF3D00;
+      transform: rotateY(70deg);
+      animation-delay: .4s;
+    }
+
+    @keyframes spin {
+      0%, 100% { box-shadow: .2em 0 0 0 currentcolor; }
+      12% { box-shadow: .2em .2em 0 0 currentcolor; }
+      25% { box-shadow: 0 .2em 0 0 currentcolor; }
+      37% { box-shadow: -.2em .2em 0 0 currentcolor; }
+      50% { box-shadow: -.2em 0 0 0 currentcolor; }
+      62% { box-shadow: -.2em -.2em 0 0 currentcolor; }
+      75% { box-shadow: 0 -.2em 0 0 currentcolor; }
+      87% { box-shadow: .2em -.2em 0 0 currentcolor; }
+    }
+
     .images-layout {
       display: flex;
       flex-direction: column;
@@ -178,19 +187,17 @@
 
   <div class="input-box">
     <input id="promptInput" type="text" placeholder="let’s make something amazing..." autocomplete="off" spellcheck="false" />
-    <button id="generateBtn">generate</button>
   </div>
 
   <div id="error" class="error"></div>
   <div id="loading" class="loading" style="display:none;">
-    <div class="spinner"></div> Generating images...
+    <span class="loader"></span>
   </div>
 
   <div class="images-layout" id="imagesLayout"></div>
 
   <script>
     const promptInput = document.getElementById("promptInput");
-    const generateBtn = document.getElementById("generateBtn");
     const errorEl = document.getElementById("error");
     const loadingEl = document.getElementById("loading");
     const imagesLayout = document.getElementById("imagesLayout");
@@ -204,7 +211,6 @@
 
       errorEl.textContent = "";
       loadingEl.style.display = "flex";
-      generateBtn.disabled = true;
 
       try {
         const response = await fetch(`/api/imagine?prompt=${encodeURIComponent(prompt)}`);
@@ -243,12 +249,10 @@
         errorEl.textContent = err.message || "Error generating images.";
       } finally {
         loadingEl.style.display = "none";
-        generateBtn.disabled = false;
       }
     }
 
     promptInput.addEventListener("keydown", e => { if (e.key === "Enter") generateImages(); });
-    generateBtn.addEventListener("click", generateImages);
   </script>
 </body>
 </html>
