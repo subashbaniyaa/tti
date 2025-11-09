@@ -14,13 +14,14 @@
   <!-- Favicon -->
   <link rel="icon" href="https://i.imgur.com/9GGNGm1.jpeg" type="image/jpeg" />
 
+  <!-- Fonts & Icons -->
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;500;700&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" crossorigin="anonymous" referrerpolicy="no-referrer" />
   
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; user-select: none; }
     body {
-      background-color: black;
+      position: relative;
       color: #f1f1f1;
       font-family: 'Poppins', sans-serif;
       display: flex;
@@ -30,7 +31,23 @@
       min-height: 100vh;
       line-height: 1.6;
       padding: 20px;
+      background: black; /* fallback for loading */
+      overflow: hidden;
     }
+
+    /* Background image layer */
+    body::before {
+      content: "";
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: url('pic.jpg') center/cover no-repeat;
+      opacity: 0.2; /* 50% opacity */
+      z-index: -1;
+    }
+
     .container {
       max-width: 720px;
       width: 100%;
@@ -39,6 +56,8 @@
       flex-direction: column;
       align-items: center;
     }
+
+    /* Profile */
     .profile-wrapper {
       position: relative;
       display: inline-block;
@@ -47,6 +66,7 @@
       background: conic-gradient(from 0deg, #fdf497, #fd5949, #d6249f, #285AEB, #fdf497);
       margin-bottom: 15px;
     }
+
     .profile-wrapper::before {
       content: "";
       position: absolute;
@@ -55,6 +75,7 @@
       border-radius: 50%;
       z-index: 0;
     }
+
     .profile-pic {
       position: relative;
       width: 140px;
@@ -65,74 +86,178 @@
       display: block;
       pointer-events: none;
       user-select: none;
+      transition: transform 0.3s ease;
     }
-    img.profile-pic:hover { transform: scale(1.05); transition: transform 0.3s; }
 
-    h1 { font-weight: 700; font-size: 1.5rem; display: flex; align-items: center; justify-content: center; gap: 6px; }
-    h1 img { width: 25px; height: 25px; }
+    .profile-pic:hover {
+      transform: scale(1.05);
+    }
 
+    /* Name & Title */
+    h1 {
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    h1 img {
+      width: 25px;
+      height: 25px;
+    }
+
+    /* Quote */
     .quote, .quote * { user-select: text; }
     h1, h1 * { user-select: none; }
-    .quote { font-weight: 500; font-size: 1.3rem; margin: 1.5rem auto; opacity: 0.9; max-width: 85%; line-height: 1.5; }
-    .quote-author { font-weight: 500; font-size: 0.9rem; margin-top: 0.5rem; }
+    .quote {
+      font-weight: 500;
+      font-size: 1.3rem;
+      margin: 1.5rem auto;
+      opacity: 0.9;
+      max-width: 85%;
+      line-height: 1.5;
+    }
+    .quote-author {
+      font-weight: 500;
+      font-size: 0.9rem;
+      margin-top: 0.5rem;
+    }
 
-    .links { margin-top: 1.5rem; display: flex; flex-direction: column; gap: 12px; width: 100%; }
-    .link-card { display: flex; align-items: center; justify-content: space-between; padding: 14px 16px; background: #1a1a1a; border-radius: 50px; transition: 0.3s; text-decoration: none; color: #fff; }
-    .link-card:hover { background: #292929; transform: translateY(-2px); }
-    .link-info { display: flex; align-items: center; gap: 12px; }
-    .link-info i { font-size: 1.5rem; opacity: 0.6; transition: opacity 0.3s; user-select: none; }
-    .link-card:hover i, .link-card:active i { opacity: 1; }
-    .link-text { text-align: left; }
-    .link-text strong { display: block; font-size: 1rem; font-weight: 500; }
-    .link-text span { font-size: 0.80rem; font-weight: 300; opacity: 0.8; }
-    .ig-gradient { background: radial-gradient(circle at 30% 110%, #fdf497 0%, #fdf497 5%, #fd5949 45%, #d6249f 60%, #285AEB 90%); -webkit-background-clip: text; background-clip: text; color: transparent; opacity: 0.6; transition: opacity 0.3s; user-select: none; }
-    .link-card:hover .ig-gradient { opacity: 1; }
+    /* Links - Static Liquid Glass */
+    .links {
+      margin-top: 1.5rem;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
+      width: 100%;
+    }
+
+    .link-card {
+      position: relative;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 20px;
+      border-radius: 50px;
+      background: rgba(255, 255, 255, 0.06);
+      backdrop-filter: blur(15px) saturate(160%);
+      -webkit-backdrop-filter: blur(15px) saturate(160%);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.35);
+      transition: all 0.3s ease;
+      text-decoration: none;
+      color: #fff;
+      overflow: hidden;
+    }
+
+    .link-card:hover {
+      transform: translateY(-4px) scale(1.02);
+      background: rgba(255, 255, 255, 0.12);
+      border-color: rgba(255, 255, 255, 0.25);
+      box-shadow: 0 10px 30px rgba(255, 255, 255, 0.1);
+    }
+
+    .link-info {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+
+    .link-info i {
+      font-size: 1.6rem;
+      opacity: 0.8;
+      transition: opacity 0.3s, transform 0.3s;
+    }
+
+    .link-card:hover i {
+      opacity: 1;
+      transform: scale(1.1);
+    }
+
+    .link-text {
+      text-align: left;
+    }
+
+    .link-text strong {
+      display: block;
+      font-size: 1.05rem;
+      font-weight: 500;
+    }
+
+    .link-text span {
+      font-size: 0.8rem;
+      font-weight: 300;
+      opacity: 0.85;
+    }
+
+    .link-card i.fa-arrow-up-right-from-square {
+      opacity: 0.6;
+      transition: opacity 0.3s;
+    }
+
+    .link-card:hover i.fa-arrow-up-right-from-square {
+      opacity: 1;
+    }
+
 
     @media (max-width: 600px) {
       .container { width: 100%; padding: 10px; }
       .profile-pic { width: 110px; height: 110px; }
       h1 { font-size: 1.2rem; }
       .quote { font-size: 1rem; }
-      .link-card { padding: 12px; border-radius: 50px; }
+      .link-card { padding: 12px; border-radius: 20px; }
       .link-info i { font-size: 1.3rem; }
       .link-text strong { font-size: 0.95rem; }
       .link-text span { font-size: 0.8rem; }
     }
   </style>
 </head>
+
 <body>
   <div class="container">
     <div class="profile-wrapper">
       <img src="https://i.imgur.com/9GGNGm1.jpeg" alt="🖼️" class="profile-pic" id="profile-pic" />
     </div>
+
     <h1 id="name" oncontextmenu="return false">
       subashbaniyaa
       <img src="https://img.icons8.com/color/48/verified-badge.png" alt="✅" id="badge" oncontextmenu="return false" draggable="false" />
     </h1>
+
     <div class="quote">
       <p id="quote">🌞</p>
       <p class="quote-author" id="author"></p>
     </div>
 
     <div class="links">
-      <a href="https://github.com/subashbaniyaa" target="_blank" class="link-card">
+      <a href="https://github.com/subashbaniyaa" target="_blank" class="link-card github">
         <div class="link-info">
           <i class="fa-brands fa-github"></i>
-          <div class="link-text"><strong>GitHub</strong><span>@subashbaniyaa</span></div>
+          <div class="link-text">
+            <strong>GitHub</strong><span>@subashbaniyaa</span>
+          </div>
         </div>
         <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
       </a>
-      <a href="/chat" target="_blank" class="link-card">
+
+      <a href="/chat" target="_blank" class="link-card chat">
         <div class="link-info">
           <i class="fa-regular fa-message"></i>
-          <div class="link-text"><strong>AI Chat</strong><span>/chat</span></div>
+          <div class="link-text">
+            <strong>AI Chat</strong><span>/chat</span>
+          </div>
         </div>
         <i class="fa-solid fa-arrow-up-right-from-square"></i>
       </a>
-      <a href="/imagine" target="_blank" class="link-card">
+
+      <a href="/imagine" target="_blank" class="link-card imagine">
         <div class="link-info">
           <i class="fa-solid fa-images"></i>
-          <div class="link-text"><strong>Text To Image</strong><span>/imagine</span></div>
+          <div class="link-text">
+            <strong>Text To Image</strong><span>/imagine</span>
+          </div>
         </div>
         <i class="fa-solid fa-arrow-up-right-from-square" aria-hidden="true"></i>
       </a>
@@ -152,7 +277,7 @@
 
     async function fetchQuote() {
       try {
-        const res = await fetch('quotes.json'); // local JSON in same folder or public folder
+        const res = await fetch('quotes.json'); // local quotes.json file
         if (!res.ok) throw new Error('Network response not ok');
         const data = await res.json();
         if (Array.isArray(data) && data.length > 0) {
