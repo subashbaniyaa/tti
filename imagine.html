@@ -31,8 +31,6 @@
     @font-face {
       font-family: "Athemi";
       src: url("/athemi.otf") format("opentype");
-      font-weight: normal;
-      font-style: normal;
       font-display: block;
     }
 
@@ -61,7 +59,7 @@
       text-shadow: 0 0 4px rgba(255,50,50,0.5), 0 0 8px rgba(255,50,50,0.25);
     }
 
-    /* Hover behavior: swap glow */
+    /* Hover swap effect */
     h1 span:hover {
       color: #ff4c4c;
       text-shadow: 0 0 4px rgba(255,50,50,0.5), 0 0 8px rgba(255,50,50,0.25);
@@ -72,7 +70,7 @@
       text-shadow: none;
     }
 
-    /* Input at bottom */
+    /* Input container */
     .input-box {
       position: fixed;
       bottom: 1.5rem;
@@ -85,31 +83,46 @@
       max-width: 700px;
       padding: 0 1rem;
       z-index: 50;
-      background: none; /* remove black background */
+      background: none;
     }
 
-    /* Frosted glass transparent input */
+    /* Glass input + hover/focus glow */
     input {
       flex: 1;
       padding: 0.8rem 1rem;
       border-radius: 30px;
-      border: 2px solid #8b0000;
+      border: 2px solid rgba(255, 0, 0, 0.6);
       font-size: 1rem;
       color: #fff;
       outline: none;
       text-align: center;
-      background: rgba(255, 255, 255, 0.08); /* transparent white layer */
+      background: rgba(255, 255, 255, 0.08);
       backdrop-filter: blur(12px) saturate(180%);
       -webkit-backdrop-filter: blur(12px) saturate(180%);
-      transition: all 0.3s ease;
+      transition: all 0.35s ease;
       box-shadow: 0 0 8px rgba(255, 0, 0, 0.15);
     }
 
-    /* Glow on focus */
-    input:focus {
-      border-color: darkred;
+    input::placeholder {
+      color: rgba(200, 200, 200, 0.5);
+      font-style: normal;
+      font-weight: 400;
     }
 
+    /* Hover: soft glow */
+    input:hover {
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.25);
+      border-color: rgba(255, 0, 0, 0.7);
+    }
+
+    /* Focus: bright glow + scale */
+    input:focus {
+      border-color: #ff1a1a;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.35);
+      transform: scale(1.03);
+    }
+
+    /* Error + loading styles */
     .error { color: #ef4444; margin-bottom: 1rem; }
 
     .loading {
@@ -279,7 +292,7 @@
       if (e.key === "Enter") {
         e.preventDefault();
         generateImages();
-        promptInput.blur(); // 👈 closes mobile keyboard
+        promptInput.blur(); // closes mobile keyboard
       }
     });
   </script>

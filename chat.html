@@ -3,15 +3,8 @@
 <head>
   <meta charset="UTF-8" />
   <title>AI Chat</title>
-  <meta name="description" content="Docs" />
-  <meta name="author" content="Subash Baniya" />
-  <meta property="og:title" content="subashbaniyaa" />
-  <meta property="og:description" content="Docs" />
-  <meta property="og:image" content="https://i.imgur.com/jWY0hPI.png" />
-  <meta property="og:url" content="/" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
-  <!-- Favicon -->
+  <meta name="author" content="Subash Baniya" />
   <link rel="icon" href="https://i.imgur.com/9GGNGm1.jpeg" type="image/jpeg" />
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
 
@@ -25,6 +18,7 @@
       font-family: "Poppins", sans-serif;
       background: #000;
       color: #f3f4f6;
+      overflow: hidden;
     }
 
     .chat-wrapper {
@@ -37,43 +31,50 @@
     @font-face {
       font-family: "Athemi";
       src: url("/athemi.otf") format("opentype");
-      font-weight: normal;
-      font-style: normal;
       font-display: block;
     }
 
-    /* --- HEADLINE --- */
+    /* --- HEADING --- */
     h1 {
       text-align: center;
-      margin: 1rem 0;
+      margin: 1.2rem 0;
       color: #fff;
       font-family: "Athemi", sans-serif;
       font-size: 3.5rem;
       font-weight: normal;
       letter-spacing: 0.08em;
-      line-height: 1;
-      text-rendering: optimizeLegibility;
-      -webkit-font-smoothing: antialiased;
       display: flex;
       justify-content: center;
-      gap: 0.2em;
+      gap: 0.25em;
       user-select: none;
-      -webkit-user-select: none;
-      -moz-user-select: none;
-      -ms-user-select: none;
     }
 
     h1 span {
-      display: inline-block;
       transition: color 0.35s ease, text-shadow 0.35s ease;
     }
 
-    h1 span:hover {
+    h1 span:first-child {
       color: #ff4c4c;
-      text-shadow: 0 0 4px rgba(255, 50, 50, 0.5),
-                   0 0 8px rgba(255, 50, 50, 0.25);
+      text-shadow: 0 0 8px rgba(255, 60, 60, 0.5),
+                   0 0 16px rgba(255, 0, 0, 0.3);
     }
 
+    h1 span:last-child {
+      color: #fff;
+    }
+
+    h1:hover span:first-child {
+      color: #fff;
+      text-shadow: none;
+    }
+
+    h1:hover span:last-child {
+      color: #ff4c4c;
+      text-shadow: 0 0 8px rgba(255, 60, 60, 0.5),
+                   0 0 16px rgba(255, 0, 0, 0.3);
+    }
+
+    /* --- CHAT AREA --- */
     .chat-container {
       flex: 1;
       display: flex;
@@ -82,6 +83,7 @@
       gap: 0.8rem;
       overflow-y: auto;
       scroll-behavior: smooth;
+      padding-bottom: 6rem; /* space above input box */
     }
 
     .chat-container::-webkit-scrollbar { display: none; }
@@ -94,6 +96,7 @@
       word-wrap: break-word;
       line-height: 1.4;
       position: relative;
+      z-index: 2;
     }
 
     .user-msg {
@@ -128,43 +131,59 @@
 
     .ai-msg:hover .copy-btn { opacity: 1; }
 
-    /* ---- Input Area ---- */
+    /* ---- Floating Glass Input ---- */
     .input-area {
+      position: fixed;
+      bottom: 1rem;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 100%;
+      max-width: 700px;
       display: flex;
-      align-items: center;
       justify-content: center;
-      padding: 1rem;
-      background: transparent; /* remove background panel */
-      flex-shrink: 0;
+      align-items: center;
+      padding: 0 1rem;
+      z-index: 10;
+      background: none;
+      pointer-events: none;
+      transition: opacity 0.3s ease;
+    }
+
+    .input-area.hidden {
+      opacity: 0.2;
     }
 
     .input-area input {
       flex: 1;
-      max-width: 700px;
-      padding: 0.8rem 1rem;
+      pointer-events: all;
+      padding: 0.8rem 1.2rem;
       border-radius: 30px;
-      border: 2px solid darkred;
-      background: rgba(255, 255, 255, 0.08); /* frosted glass */
-      backdrop-filter: blur(12px) saturate(180%);
-      -webkit-backdrop-filter: blur(12px) saturate(180%);
+      border: 2px solid rgba(255, 0, 0, 0.6);
+      background: rgba(255, 255, 255, 0.08);
+      backdrop-filter: blur(14px) saturate(180%);
+      -webkit-backdrop-filter: blur(14px) saturate(180%);
       color: #fff;
       outline: none;
       font-size: 1rem;
-      transition: all 0.3s ease;
-      box-shadow: 0 0 8px rgba(255, 0, 0, 0.15);
-      text-align: center; /* center text & placeholder */
-    }
-
-    .input-area input::placeholder {
-      color: #ddd;
-      opacity: 0.8;
       text-align: center;
+      transition: all 0.3s ease;
+      box-shadow: 0 0 10px rgba(255, 0, 0, 0.25);
     }
 
     .input-area input:focus {
-      border-color: darkred;
+      border-color: #ff1a1a;
+      box-shadow: 0 0 15px rgba(255, 0, 0, 0.35);
+      transform: scale(1.03);
     }
 
+    .input-area input::placeholder {
+      color: rgba(200, 200, 200, 0.5); /* dimmed like imagine page */
+      font-style: normal;
+      font-weight: 400;
+      letter-spacing: 0.02em;
+    }
+
+    /* Typing dots */
     .typing-dots {
       display: flex;
       align-items: center;
@@ -188,25 +207,26 @@
     }
   </style>
 </head>
+
 <body>
   <div class="chat-wrapper">
-    <h1><span>Ai</span> <span>Chat</span></h1>
+    <h1><span>AI</span> <span>Chat</span></h1>
 
     <div class="chat-container" id="chatContainer"></div>
 
-    <div class="input-area">
-      <input id="promptInput" type="text" placeholder="Start chatting..." autocomplete="off" spellcheck="false"/>
+    <div class="input-area" id="inputArea">
+      <input id="promptInput" type="text" placeholder="Start chatting..." autocomplete="off" spellcheck="false" />
     </div>
   </div>
 
   <script>
     const promptInput = document.getElementById("promptInput");
     const chatContainer = document.getElementById("chatContainer");
-    let userScrolling = false;
+    const inputArea = document.getElementById("inputArea");
 
     chatContainer.addEventListener("scroll", () => {
-      const atBottom = chatContainer.scrollTop === 0;
-      userScrolling = !atBottom;
+      const nearTop = chatContainer.scrollTop > 50;
+      inputArea.classList.toggle("hidden", nearTop);
     });
 
     async function sendMessage() {
@@ -265,23 +285,22 @@
     function createTypingIndicator() {
       const typingDiv = document.createElement("div");
       typingDiv.className = "message ai-msg";
-
       const dots = document.createElement("div");
       dots.className = "typing-dots";
       dots.innerHTML = `<span></span><span></span><span></span>`;
       typingDiv.appendChild(dots);
-
       return typingDiv;
     }
 
     function scrollToBottom() {
-      if (!userScrolling) {
-        chatContainer.scrollTop = 0;
-      }
+      chatContainer.scrollTop = 0;
     }
 
     promptInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") sendMessage();
+      if (e.key === "Enter") {
+        e.preventDefault();
+        sendMessage(); // keep focus (keyboard stays open)
+      }
     });
   </script>
 </body>
