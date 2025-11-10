@@ -10,43 +10,34 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
-app.use(cors());
 
-app.use(express.json());
+// Middleware
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS?.split(",") || "*"
 }));
-
+app.use(express.json());
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
+// Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
-app.use('/public', express.static(path.join(__dirname, 'public')));
 
-app.get('/imagine', (req, res) => {
-  res.sendFile(path.join(__dirname, 'imagine.html'));
-});
-app.get('/chat', (req, res) => {
-  res.sendFile(path.join(__dirname, 'chat.html'));
-});
 app.get('/404', (req, res) => {
   res.sendFile(path.join(__dirname, '404.html'));
 });
 
+// Banned words list
 const notAllowed = ["subash", "baniya"];
 
+// Generate Image function
 async function generateImage(prompt, aspect_ratio = '1x1') {
   const baseURL = 'https://api.creartai.com/api/v1/text2image';
 
-  const options = {
-    method: 'POST',
-    url: baseURL,
-    headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    data: new URLSearchParams({
+  const response = await axios.post(
+    baseURL,
+    new URLSearchParams({
       prompt,
       negative_prompt:
         ',malformed hands,malformed fingers,malformed faces,malformed body parts,mutated body parts,malformed eyes,mutated fingers,mutated hands,realistic,worst quality, low quality, blurry, pixelated, extra limb, extra fingers, bad hand, text, name, letters, out of frame, lowres, text, error, cropped, jpeg artifacts, ugly, duplicate, morbid, mutilated, out of frame, poorly drawn hands, poorly drawn face, mutation, deformed, dehydrated, bad anatomy, bad proportions, cloned face, disfigured, gross proportions, malformed limbs, missing arms, missing legs, fused fingers, too many fingers, long neck, username,',
@@ -54,12 +45,13 @@ async function generateImage(prompt, aspect_ratio = '1x1') {
       controlnet_conditioning_scale: 0.5,
       guidance_scale: '5.5',
     }),
-  };
+    { headers: { 'Content-Type': 'application/x-www-form-urlencoded' } }
+  );
 
-  const response = await axios(options);
   return response.data.image_base64;
 }
 
+// API route for image generation
 app.get('/api/imagine', async (req, res) => {
   const { prompt } = req.query;
 
@@ -78,7 +70,6 @@ app.get('/api/imagine', async (req, res) => {
   }
 
   try {
-    // Generate 2 square images (1:1) and 1 widescreen (16:9)
     const [img1, img2, img3] = await Promise.all([
       generateImage(prompt, '1x1'),
       generateImage(prompt, '1x1'),
@@ -103,49 +94,7 @@ app.get('/api/imagine', async (req, res) => {
   }
 });
 
-app.get("/api/chat", async (req, res) => {
-  const prompt = req.query.prompt;
-
-  if (!prompt) {
-    return res.status(400).json({
-      error: "The 'prompt' query parameter is required."
-    });
-  }
-
-  try {
-    const response = await axios.post(
-      "https://api.deepinfra.com/v1/openai/chat/completions",
-      {
-        model: "meta-llama/Llama-3.3-70B-Instruct-Turbo",
-        messages: [
-          {
-            role: "system",
-            content: `You are a friendly AI Assistant, providing short, human-like, and engaging responses.`
-          },
-          { role: "user", content: prompt }
-        ],
-        stream: false
-      },
-      {
-        headers: {
-          "accept": "application/json",
-          "content-type": "application/json",
-          "x-deepinfra-source": "web-embed",
-          "Referer": "https://deepinfra.com/"
-        }
-      }
-    );
-
-    res.json(response.data);
-  } catch (error) {
-    res.status(500).json({
-      error: process.env.NODE_ENV === "development"
-        ? error.message
-        : "Chat request failed"
-    });
-  }
-});
-
+// Block access to sensitive paths
 app.use((req, res, next) => {
   const blocked = [
     '/index.js',
@@ -157,18 +106,19 @@ app.use((req, res, next) => {
   ];
 
   if (blocked.some(f => req.url.startsWith(f))) {
-    return res.status(404).sendFile(
-      path.join(__dirname, '404.html'),
-      (err) => {
-        if (err) res.status(404).send("404 - Not Found");
-      }
-    );
+    return res.status(404).sendFile(path.join(__dirname, '404.html'));
   }
 
   next();
 });
 
+// Catch-all 404 for unmatched routes or missing files
+app.use((req, res) => {
+  res.status(404).sendFile(path.join(__dirname, '404.html'));
+});
+
+// Start server
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () =>
-  console.log(`✅ Server running on http://localhost:${PORT}`)
-);
+app.listen(PORT, () => {
+  console.log(`✅ Server running on http://localhost:${PORT}`);
+});
