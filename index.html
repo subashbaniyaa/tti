@@ -373,9 +373,21 @@
 
     let isGenerating = false;
     const favourites = new Set();
+    
+    // Select all text on first focus (not every click)
+    promptInput.addEventListener("focus", (e) => {
+      // Only select if there's text and it's not already selected
+      if (promptInput.value && !promptInput.dataset.selected) {
+        promptInput.select();
+        promptInput.dataset.selected = "true";
+      }
+    });
 
-    // Select all text on click
-    promptInput.addEventListener("click", () => promptInput.select());
+    // When user clicks away, allow future selection again
+    promptInput.addEventListener("blur", () => {
+      delete promptInput.dataset.selected;
+    });
+
 
     // Generate on Enter key
     promptInput.addEventListener("keydown", async (e) => {
