@@ -17,16 +17,14 @@
       font-family: "Poppins", sans-serif;
       background: #000;
       color: #f3f4f6;
-      height: auto; /* allow natural page height */
-      overflow-x: hidden; /* prevent horizontal scroll */
-      -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
+      height: 100%;
+      overflow-x: hidden;
     }
 
     .chat-wrapper {
       display: flex;
       flex-direction: column;
-      min-height: 100vh;
-
+      height: 100vh;
       background: #000;
     }
 
@@ -51,22 +49,16 @@
       user-select: none;
     }
 
-    h1 span {
-      color: #fff;
-      text-shadow: none;
-      transition: none;
-    }
-
     /* --- CHAT AREA --- */
     .chat-container {
       flex: 1;
       display: flex;
-      flex-direction: column-reverse;
+      flex-direction: column-reverse; /* newest at bottom */
       padding: 1rem;
       gap: 0.8rem;
       overflow-y: auto;
       scroll-behavior: smooth;
-      padding-bottom: 6rem; /* space above input box */
+      padding-bottom: 6rem; /* space above input */
     }
 
     .chat-container::-webkit-scrollbar { display: none; }
@@ -114,7 +106,7 @@
 
     .ai-msg:hover .copy-btn { opacity: 1; }
 
-    /* ---- Clean Liquid Glass Input ---- */
+    /* ---- Input ---- */
     .input-area {
       position: fixed;
       bottom: 1rem;
@@ -214,7 +206,7 @@
       promptInput.value = "";
 
       const typingEl = createTypingIndicator();
-      chatContainer.prepend(typingEl);
+      chatContainer.prepend(typingEl); // Newest near input
       scrollToBottom();
 
       try {
@@ -255,7 +247,7 @@
         msgDiv.appendChild(copyBtn);
       }
 
-      chatContainer.prepend(msgDiv);
+      chatContainer.prepend(msgDiv); // Newest at bottom (visually)
       scrollToBottom();
     }
 
