@@ -11,15 +11,15 @@
   <style>
     * { box-sizing: border-box; }
 
-    body, html {
+    html, body {
       margin: 0;
       padding: 0;
-      height: 100%;
       font-family: "Poppins", sans-serif;
       background: #000;
       color: #f3f4f6;
-      overflow: hidden;
-      overscroll-behavior-y: contain;
+      height: auto; /* allow natural page height */
+      overflow-x: hidden; /* prevent horizontal scroll */
+      -webkit-overflow-scrolling: touch; /* iOS smooth scrolling */
     }
 
     html, body {
@@ -29,7 +29,8 @@
     .chat-wrapper {
       display: flex;
       flex-direction: column;
-      height: 100%;
+      min-height: 100vh;
+
       background: #000;
     }
 
