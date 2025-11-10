@@ -13,9 +13,7 @@
   <style>
     * { box-sizing: border-box; margin:0; padding:0; }
 
-    html {
-      scroll-behavior: smooth;
-    }
+    html { scroll-behavior: smooth; }
 
     body {
       font-family: "Poppins", sans-serif;
@@ -239,6 +237,8 @@
     const loadingEl = document.getElementById("loading");
     const imagesLayout = document.getElementById("imagesLayout");
 
+    let hasGeneratedOnce = false; // track if first generation happened
+
     async function generateImages() {
       const prompt = promptInput.value.trim();
       if (!prompt) {
@@ -282,6 +282,8 @@
         imagesLayout.appendChild(bottomRow);
 
         setTimeout(() => window.scrollTo({ top: 0, behavior: "smooth" }), 100);
+
+        hasGeneratedOnce = true; // mark after first generation
       } catch (err) {
         errorEl.textContent = err.message || "Error generating images.";
       } finally {
@@ -289,6 +291,7 @@
       }
     }
 
+    // Keep existing behavior for Enter key and scrolling
     promptInput.addEventListener("keydown", e => {
       if (e.key === "Enter") {
         e.preventDefault();
@@ -297,6 +300,13 @@
           window.scrollTo({ top: 0, behavior: "smooth" });
           generateImages();
         }, 150);
+      }
+    });
+
+    // After first generation: auto-select text when clicking input
+    promptInput.addEventListener("focus", () => {
+      if (hasGeneratedOnce) {
+        setTimeout(() => promptInput.select(), 60);
       }
     });
   </script>
