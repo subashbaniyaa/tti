@@ -11,21 +11,22 @@ body {
   min-height: 100vh;
   padding-bottom: 8rem;
 }
-/* --- HEADER BANNER (small, rounded) --- */
+/* --- RESPONSIVE HEADER BANNER --- */
 .banner {
   width: 100%;
   display: flex;
   justify-content: center;
   align-items: center;
   padding: 20px 0;
-  background: transparent; /* or use a light color if needed */
+  background: transparent;
 }
 
 .banner img {
-  width: 500px; /* adjust size as you like (e.g., 500–800px) */
+  width: 90%;
+  max-width: 500px; /* perfect size on desktop */
   height: auto;
-  border-radius: 20px; /* rounded corners */
-  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* subtle glow */
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
   object-fit: cover;
   display: block;
   user-select: none;
@@ -36,6 +37,26 @@ body {
 .banner img:hover {
   transform: scale(1.03);
   box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+/* --- MOBILE OPTIMIZATION --- */
+@media (max-width: 768px) {
+  .banner {
+    padding: 15px 0;
+  }
+
+  .banner img {
+    width: 95%;
+    max-width: 400px;
+    border-radius: 15px;
+  }
+}
+
+@media (max-width: 480px) {
+  .banner img {
+    max-width: 320px;
+    border-radius: 12px;
+  }
 }
 
 
