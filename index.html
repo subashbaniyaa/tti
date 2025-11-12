@@ -229,24 +229,17 @@
       z-index: 3;
       user-select: none;
     }
-    .heart-icon.active { color: #ff0040; transform: scale(1.2); }
-
-    .floating-heart {
-      position: absolute;
+    .heart-icon.active {
       color: #ff0040;
-      font-size: 2.5rem;
-      opacity: 0;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%) scale(0.6);
-      animation: floatUp 1s ease-out;
-      z-index: 5;
-      pointer-events: none;
+      transform: scale(1.2);
+      animation: heartPop 0.3s ease-out;
     }
-    @keyframes floatUp {
-      0% { opacity: 1; transform: translate(-50%, -50%) scale(0.6); }
-      60% { opacity: 1; transform: translate(-50%, -120%) scale(1); }
-      100% { opacity: 0; transform: translate(-50%, -200%) scale(1.3); }
+
+    @keyframes heartPop {
+      0% { transform: scale(0.8); }
+      40% { transform: scale(1.25); }
+      70% { transform: scale(0.95); }
+      100% { transform: scale(1.05); }
     }
 
     .overlay {
@@ -372,7 +365,6 @@
         backdrop-filter: blur(10px) saturate(180%);
       }
     }
-
   </style>
 </head>
 
@@ -510,49 +502,6 @@
       }
       syncHearts(src, isActive);
     }
-
-    // Floating heart animation like Instagram ❤️
-    function showFloatingHeart(parent) {
-      const heart = document.createElement("i");
-      heart.className = "fa-solid fa-heart floating-heart";
-      parent.appendChild(heart);
-
-      // Randomize slight position and rotation
-      const offsetX = (Math.random() - 0.5) * 80;
-      const offsetY = (Math.random() - 0.5) * 20;
-      const rotation = (Math.random() - 0.5) * 30;
-      heart.style.transform = `translate(-50%, -50%) translate(${offsetX}px, ${offsetY}px) rotate(${rotation}deg) scale(0.8)`;
-
-      // Animate upward float
-      setTimeout(() => {
-        heart.style.transition = "transform 1.2s ease-out, opacity 1.2s ease-out";
-        heart.style.transform += " translateY(-100px) scale(1.4)";
-        heart.style.opacity = "0";
-      }, 50);
-
-      // Remove after animation
-      setTimeout(() => heart.remove(), 1300);
-    }
-
-    // Modify your existing toggleFavourite() to call this:
-    function toggleFavourite(src, heart) {
-      const isActive = heart.classList.toggle("active");
-      heart.classList.toggle("fa-solid", isActive);
-      heart.classList.toggle("fa-regular", !isActive);
-      const parent = heart.parentElement;
-
-      if (isActive) {
-        favourites.add(src);
-        addToFavourites(src);
-        showFloatingHeart(parent); // ❤️ floating effect
-      } else {
-        favourites.delete(src);
-        removeFromFavourites(src);
-        syncHearts(src, false);
-      }
-      syncHearts(src, isActive);
-    }
-
 
     function syncHearts(src, state) {
       document.querySelectorAll(`img[src='${src}']`).forEach(img => {
