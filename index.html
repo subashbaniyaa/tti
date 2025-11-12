@@ -252,7 +252,8 @@
     .overlay {
       position: fixed;
       inset: 0;
-      background: rgba(0,0,0,0.88);
+      background: rgba(0, 0, 0, 0.65);
+      backdrop-filter: blur(8px) saturate(140%);
       display: flex;
       justify-content: center;
       align-items: center;
@@ -261,6 +262,7 @@
       transition: opacity 0.35s ease;
       z-index: 100;
     }
+
     .overlay.active { opacity: 1; pointer-events: all; }
     .overlay img {
       max-width: 92%;
@@ -304,6 +306,19 @@
       padding: 0.4rem 0.8rem;
     }
 
+    /* Floating Hearts like Instagram */
+    .floating-heart {
+      position: absolute;
+      color: #ff005d;
+      font-size: 2.5rem;
+      opacity: 1;
+      left: 50%;
+      top: 50%;
+      transform: translate(-50%, -50%) scale(0.8);
+      pointer-events: none;
+      z-index: 10;
+    }
+
     #promptInput {
       width: 100%;
       padding: 0.6rem 1rem;
@@ -331,6 +346,33 @@
       .profile-pic { width: 110px; height: 110px; }
       h1#name { font-size: 1.2rem; }
     }
+
+    /* Auto Light/Dark Mode */
+    @media (prefers-color-scheme: light) {
+      body {
+        background: #fafafa;
+        color: #111;
+      }
+      .liquidGlass-wrapper {
+        background: rgba(0, 0, 0, 0.05);
+        border: 1px solid rgba(0, 0, 0, 0.15);
+        box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
+      }
+      #promptInput {
+        color: #000;
+      }
+      #promptInput::placeholder {
+        color: rgba(0, 0, 0, 0.55);
+      }
+      .image-card {
+        background: #f3f3f3;
+      }
+      .overlay {
+        background: rgba(255, 255, 255, 0.75);
+        backdrop-filter: blur(10px) saturate(180%);
+      }
+    }
+
   </style>
 </head>
 
@@ -468,6 +510,49 @@
       }
       syncHearts(src, isActive);
     }
+
+    // Floating heart animation like Instagram ❤️
+    function showFloatingHeart(parent) {
+      const heart = document.createElement("i");
+      heart.className = "fa-solid fa-heart floating-heart";
+      parent.appendChild(heart);
+
+      // Randomize slight position and rotation
+      const offsetX = (Math.random() - 0.5) * 80;
+      const offsetY = (Math.random() - 0.5) * 20;
+      const rotation = (Math.random() - 0.5) * 30;
+      heart.style.transform = `translate(-50%, -50%) translate(${offsetX}px, ${offsetY}px) rotate(${rotation}deg) scale(0.8)`;
+
+      // Animate upward float
+      setTimeout(() => {
+        heart.style.transition = "transform 1.2s ease-out, opacity 1.2s ease-out";
+        heart.style.transform += " translateY(-100px) scale(1.4)";
+        heart.style.opacity = "0";
+      }, 50);
+
+      // Remove after animation
+      setTimeout(() => heart.remove(), 1300);
+    }
+
+    // Modify your existing toggleFavourite() to call this:
+    function toggleFavourite(src, heart) {
+      const isActive = heart.classList.toggle("active");
+      heart.classList.toggle("fa-solid", isActive);
+      heart.classList.toggle("fa-regular", !isActive);
+      const parent = heart.parentElement;
+
+      if (isActive) {
+        favourites.add(src);
+        addToFavourites(src);
+        showFloatingHeart(parent); // ❤️ floating effect
+      } else {
+        favourites.delete(src);
+        removeFromFavourites(src);
+        syncHearts(src, false);
+      }
+      syncHearts(src, isActive);
+    }
+
 
     function syncHearts(src, state) {
       document.querySelectorAll(`img[src='${src}']`).forEach(img => {
