@@ -12,372 +12,16 @@
   <link rel="icon" href="https://i.imgur.com/9GGNGm1.jpeg" type="image/jpeg" />
   <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
-
-  <style>
-    * { box-sizing: border-box; margin:0; padding:0; }
-    html { scroll-behavior: smooth; }
-
-    body {
-      font-family: "Poppins", sans-serif;
-      background: #000;
-      color: #f3f4f6;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      min-height: 100vh;
-      padding-bottom: 8rem;
-    }
-
-    /* --- PROFILE HEADER --- */
-    .container {
-      text-align: center;
-      margin-top: 2rem;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      user-select: none;
-    }
-
-    .profile-wrapper {
-      position: relative;
-      display: inline-block;
-      border-radius: 50%;
-      padding: 4px;
-      background: conic-gradient(from 0deg, #fdf497, #fd5949, #d6249f, #285AEB, #fdf497);
-      margin-bottom: 15px;
-      user-select: none;
-    }
-
-    .profile-wrapper::before {
-      content: "";
-      position: absolute;
-      inset: 2px;
-      background: black;
-      border-radius: 50%;
-      z-index: 0;
-      user-select: none;
-    }
-
-    .profile-pic {
-      position: relative;
-      width: 140px;
-      height: 140px;
-      border-radius: 50%;
-      object-fit: cover;
-      z-index: 1;
-      display: block;
-      pointer-events: none;
-      transition: transform 0.3s ease;
-      user-select: none;
-      -webkit-user-drag: none;
-    }
-
-    .profile-pic:hover { transform: scale(1.05); }
-
-    h1#name {
-      font-weight: 700;
-      font-size: 1.5rem;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 6px;
-      margin-bottom: 2rem;
-      user-select: none;
-    }
-
-    h1#name img {
-      width: 25px;
-      height: 25px;
-      user-select: none;
-      -webkit-user-drag: none;
-    }
-
-    /* --- MAIN HEADING --- */
-    @font-face {
-      font-family: "Athemi";
-      src: url("/athemi.otf") format("opentype");
-      font-display: block;
-    }
-
-    h1.main-title {
-      text-align: center;
-      margin: 1rem 0 2rem;
-      color: #ffffff;
-      font-family: "Athemi", sans-serif;
-      font-weight: normal;
-      font-size: 4rem;
-      letter-spacing: 0.08em;
-      display: flex;
-      justify-content: center;
-      gap: 0.2em;
-      user-select: none;
-    }
-
-    .error { color: #ef4444; margin-bottom: 1rem; }
-
-    .loading {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      margin: 1rem 0 3rem;
-      height: 60px;
-    }
-
-    .loader {
-      position: relative;
-      transform: rotateZ(45deg);
-      perspective: 1000px;
-      border-radius: 50%;
-      width: 48px;
-      height: 48px;
-      color: #fff;
-    }
-    .loader:before, .loader:after {
-      content: '';
-      position: absolute;
-      width: inherit;
-      height: inherit;
-      border-radius: 50%;
-      transform: rotateX(70deg);
-      animation: spin 1s linear infinite;
-    }
-    .loader:after {
-      color: #888;
-      transform: rotateY(70deg);
-      animation-delay: .4s;
-    }
-    @keyframes spin {
-      0%,100%{box-shadow:.2em 0 0 0 currentcolor;}
-      25%{box-shadow:0 .2em 0 0 currentcolor;}
-      50%{box-shadow:-.2em 0 0 0 currentcolor;}
-      75%{box-shadow:0 -.2em 0 0 currentcolor;}
-    }
-
-    .images-layout, .favourites-gallery {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 1rem;
-      width: 100%;
-      max-width: 950px;
-      margin-top: 1rem;
-    }
-
-    .top-row, .bottom-row {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      gap: 1rem;
-      width: 100%;
-    }
-
-    .favourites-grid {
-      display: flex;
-      flex-wrap: wrap;
-      gap: 0.8rem;
-      justify-content: center;
-      width: 100%;
-      margin-top: 2rem;
-    }
-
-    .image-card {
-      background: #111;
-      border-radius: 16px;
-      overflow: hidden;
-      flex: 1;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transform: scale(0.95);
-      animation: fadeIn 0.6s forwards;
-      position: relative;
-    }
-
-    @keyframes fadeIn {
-      to { opacity: 1; transform: scale(1); }
-    }
-
-    .image-card img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      border-radius: 16px;
-      cursor: pointer;
-      transition: transform 0.25s ease;
-      -webkit-user-drag: none;
-    }
-
-    .image-card img:hover { transform: scale(1.02); }
-
-    .square { aspect-ratio: 1 / 1; }
-    .wide { aspect-ratio: 16 / 9; width: 100%; }
-    .small-square {
-      width: 140px;
-      aspect-ratio: 1 / 1;
-      flex: none;
-    }
-
-    .heart-icon {
-      position: absolute;
-      bottom: 10px;
-      right: 12px;
-      color: rgba(255,255,255,0.85);
-      font-size: 1.25rem;
-      cursor: pointer;
-      transition: transform 0.25s ease, color 0.25s ease;
-      z-index: 3;
-      user-select: none;
-    }
-    .heart-icon.active {
-      color: #ff0040;
-      transform: scale(1.2);
-      animation: heartPop 0.3s ease-out;
-    }
-
-    @keyframes heartPop {
-      0% { transform: scale(0.8); }
-      40% { transform: scale(1.25); }
-      70% { transform: scale(0.95); }
-      100% { transform: scale(1.05); }
-    }
-
-    .overlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.65);
-      backdrop-filter: blur(8px) saturate(140%);
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.35s ease;
-      z-index: 100;
-    }
-
-    .overlay.active { opacity: 1; pointer-events: all; }
-    .overlay img {
-      max-width: 92%;
-      max-height: 88%;
-      border-radius: 10px;
-      transform: scale(0.9) translateY(20px);
-      opacity: 0;
-      transition: transform 0.45s ease, opacity 0.45s ease;
-    }
-    .overlay.active img {
-      opacity: 1;
-      transform: scale(1) translateY(0);
-    }
-
-    .wrapper {
-      position: fixed;
-      bottom: 1.5rem;
-      left: 50%;
-      transform: translateX(-50%);
-      width: 100%;
-      max-width: 600px;
-      z-index: 50;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-    }
-
-    .liquidGlass-wrapper {
-      width: 100%;
-      border-radius: 1.6rem;
-      background: rgba(255,255,255,0.05);
-      backdrop-filter: blur(6px) saturate(120%);
-      border: 1px solid rgba(255,255,255,0.15);
-      box-shadow: inset 0 0 3px rgba(255,255,255,0.2);
-    }
-
-    .liquidGlass-text {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      padding: 0.4rem 0.8rem;
-    }
-
-    /* Floating Hearts like Instagram */
-    .floating-heart {
-      position: absolute;
-      color: #ff005d;
-      font-size: 2.5rem;
-      opacity: 1;
-      left: 50%;
-      top: 50%;
-      transform: translate(-50%, -50%) scale(0.8);
-      pointer-events: none;
-      z-index: 10;
-    }
-
-    #promptInput {
-      width: 100%;
-      padding: 0.6rem 1rem;
-      border-radius: 1.5rem;
-      border: none;
-      background: transparent;
-      color: #fff;
-      font-size: 0.95rem;
-      font-weight: 600;
-      text-align: center;
-      outline: none;
-      font-family: "Poppins", sans-serif;
-    }
-
-    #promptInput::placeholder {
-      color: rgba(255,255,255,0.55);
-      font-weight: 500;
-    }
-
-    @media (max-width: 700px) {
-      .top-row { flex-direction: column; }
-      h1.main-title { font-size: 3rem; }
-      #promptInput { font-size: 0.9rem; }
-      .liquidGlass-wrapper { max-width: 90%; }
-      .profile-pic { width: 110px; height: 110px; }
-      h1#name { font-size: 1.2rem; }
-    }
-
-    /* Auto Light/Dark Mode */
-    @media (prefers-color-scheme: light) {
-      body {
-        background: #fafafa;
-        color: #111;
-      }
-      .liquidGlass-wrapper {
-        background: rgba(0, 0, 0, 0.05);
-        border: 1px solid rgba(0, 0, 0, 0.15);
-        box-shadow: inset 0 0 3px rgba(0, 0, 0, 0.2);
-      }
-      #promptInput {
-        color: #000;
-      }
-      #promptInput::placeholder {
-        color: rgba(0, 0, 0, 0.55);
-      }
-      .image-card {
-        background: #f3f3f3;
-      }
-      .overlay {
-        background: rgba(255, 255, 255, 0.75);
-        backdrop-filter: blur(10px) saturate(180%);
-      }
-    }
-  </style>
+  <link rel="stylesheet" href="styles.css">
 </head>
-
 <body>
-  <!-- Profile Header -->
   <div class="container">
     <div class="profile-wrapper">
       <img src="https://i.imgur.com/9GGNGm1.jpeg" alt="Profile" class="profile-pic" id="profile-pic" draggable="false" oncontextmenu="return false;">
     </div>
   </div>
 
-  <!-- Text-to-Image Section -->
-  <h1 class="main-title"><span>Text</span> <span>to</span> <span>Image</span></h1>
+  <h1 class="main-title"><span>Text</span> <span>to</span> <span>image</span></h1>
   <div id="error" class="error"></div>
   <div id="loading" class="loading" style="display:none;"><span class="loader"></span></div>
   <div class="images-layout" id="imagesLayout"></div>
@@ -408,27 +52,22 @@
     let isGenerating = false;
     const favourites = new Set();
     
-    // Select all text on first focus (not every click)
     promptInput.addEventListener("focus", (e) => {
-      // Only select if there's text and it's not already selected
       if (promptInput.value && !promptInput.dataset.selected) {
         promptInput.select();
         promptInput.dataset.selected = "true";
       }
     });
 
-    // When user clicks away, allow future selection again
     promptInput.addEventListener("blur", () => {
       delete promptInput.dataset.selected;
     });
 
-
-    // Generate on Enter key
     promptInput.addEventListener("keydown", async (e) => {
       if (e.key === "Enter") {
         e.preventDefault();
-        promptInput.blur(); // closes mobile keyboard
-        window.scrollTo({ top: 0, behavior: "smooth" }); // smooth scroll to top immediately
+        promptInput.blur();
+        window.scrollTo({ top: 0, behavior: "smooth" });
         await generateImages();
       }
     });
@@ -457,7 +96,6 @@
         imagesLayout.appendChild(topRow);
         imagesLayout.appendChild(bottomRow);
 
-        // Smooth scroll to the top of generated image section
         setTimeout(() => {
           imagesLayout.scrollIntoView({ behavior: "smooth", block: "start" });
         }, 300);
@@ -530,6 +168,61 @@
       overlay.classList.add("active");
     }
     overlay.addEventListener("click", () => overlay.classList.remove("active"));
+    const typewriterTexts = [
+      "Describe your imagination...",
+      "A glowing forest under twin moons...",
+      "A cyberpunk samurai in the rain...",
+      "A dragon curled around a crystal tower...",
+
+      "Unleash your imagination...",
+      "A surreal dreamscape made of mirrors...",
+      "A cozy cabin floating among clouds...",
+      "An astronaut discovering ancient ruins on Mars...",
+
+      "Visualize your thoughts...",
+      "A neon city built inside a giant tree...",
+      "A waterfall made of stars...",
+      "A fox wearing a crown of fireflies...",
+
+      "Let your creativity flow...",
+      "A futuristic temple hidden in the desert...",
+      "A giant whale swimming through the sky...",
+      "A time traveler meeting their past self..."
+    ];
+
+    let currentTextIndex = 0;
+    let charIndex = 0;
+    let typingSpeed = 45;
+    let deletingSpeed = 17;
+    let delayBetweenTexts = 1000;
+
+    function typeWriter() {
+      const text = typewriterTexts[currentTextIndex];
+      const displayText = text.substring(0, charIndex);
+      promptInput.setAttribute("placeholder", displayText);
+
+      if (charIndex < text.length) {
+        charIndex++;
+        setTimeout(typeWriter, typingSpeed);
+      } else {
+        setTimeout(deleteText, delayBetweenTexts);
+      }
+    }
+
+    function deleteText() {
+      const text = typewriterTexts[currentTextIndex];
+      const displayText = text.substring(0, charIndex);
+      promptInput.setAttribute("placeholder", displayText);
+
+      if (charIndex > 0) {
+        charIndex--;
+        setTimeout(deleteText, deletingSpeed);
+      } else {
+        currentTextIndex = (currentTextIndex + 1) % typewriterTexts.length;
+        setTimeout(typeWriter, 300);
+      }
+    }
+        typeWriter();
   </script>
 </body>
 </html>

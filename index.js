@@ -5,13 +5,11 @@ import path from 'path';
 import morgan from 'morgan';
 import { fileURLToPath } from 'url';
 
-// Fix for __dirname in ES modules
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
 
-// Middleware
 app.use(cors({
   origin: process.env.ALLOWED_ORIGINS?.split(",") || "*"
 }));
@@ -19,19 +17,15 @@ app.use(express.json());
 app.use(morgan('dev'));
 app.use(express.static(path.join(__dirname, 'public')));
 
-// Routes
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
-
 app.get('/404', (req, res) => {
   res.sendFile(path.join(__dirname, '404.html'));
 });
 
-// Banned words list
 const notAllowed = ["subash", "baniya"];
 
-// Generate Image function
 async function generateImage(prompt, aspect_ratio = '1x1') {
   const baseURL = 'https://api.creartai.com/api/v1/text2image';
 
@@ -51,7 +45,6 @@ async function generateImage(prompt, aspect_ratio = '1x1') {
   return response.data.image_base64;
 }
 
-// API route for image generation
 app.get('/api/imagine', async (req, res) => {
   const { prompt } = req.query;
 
@@ -94,15 +87,15 @@ app.get('/api/imagine', async (req, res) => {
   }
 });
 
-// Block access to sensitive paths
 app.use((req, res, next) => {
   const blocked = [
     '/index.js',
     '/public/quotes.json',
+    '/public/styles.css',
     '/.env',
     '/package.json',
     '/package-lock.json',
-    '/node_modules',
+    '/node_modules',   
   ];
 
   if (blocked.some(f => req.url.startsWith(f))) {
@@ -112,12 +105,10 @@ app.use((req, res, next) => {
   next();
 });
 
-// Catch-all 404 for unmatched routes or missing files
 app.use((req, res) => {
   res.status(404).sendFile(path.join(__dirname, '404.html'));
 });
 
-// Start server
 const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`✅ Server running on http://localhost:${PORT}`);
