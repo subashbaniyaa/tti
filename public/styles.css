@@ -11,52 +11,33 @@ body {
   min-height: 100vh;
   padding-bottom: 8rem;
 }
-
-/* --- PROFILE HEADER --- */
-.container {
-  text-align: center;
-  margin-top: 2rem;
+/* --- HEADER BANNER (small, rounded) --- */
+.banner {
+  width: 100%;
   display: flex;
-  flex-direction: column;
+  justify-content: center;
   align-items: center;
-  user-select: none;
+  padding: 20px 0;
+  background: transparent; /* or use a light color if needed */
 }
 
-.profile-wrapper {
-  position: relative;
-  display: inline-block;
-  border-radius: 50%;
-  padding: 4px;
-  background: conic-gradient(from 0deg, #fdf497, #fd5949, #d6249f, #285AEB, #fdf497);
-  margin-bottom: 15px;
-  user-select: none;
-}
-
-.profile-wrapper::before {
-  content: "";
-  position: absolute;
-  inset: 2px;
-  background: black;
-  border-radius: 50%;
-  z-index: 0;
-  user-select: none;
-}
-
-.profile-pic {
-  position: relative;
-  width: 140px;
-  height: 140px;
-  border-radius: 50%;
+.banner img {
+  width: 500px; /* adjust size as you like (e.g., 500–800px) */
+  height: auto;
+  border-radius: 20px; /* rounded corners */
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2); /* subtle glow */
   object-fit: cover;
-  z-index: 1;
   display: block;
-  pointer-events: none;
-  transition: transform 0.3s ease;
   user-select: none;
   -webkit-user-drag: none;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
-.profile-pic:hover { transform: scale(1.05); }
+.banner img:hover {
+  transform: scale(1.03);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
 
 h1#name {
   font-weight: 700;
