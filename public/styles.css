@@ -66,9 +66,12 @@ h1#name {
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
-  margin-bottom: 2rem;
+  gap: 5px;
+  margin-top: 0.1rem; /* reduced top margin to move text upward */
+  margin-bottom: 1.5rem;
   user-select: none;
+  transition: color 0.3s ease; /* smooth color change */
+  color: var(--text-color);
 }
 
 h1#name img {
@@ -76,6 +79,18 @@ h1#name img {
   height: 25px;
   user-select: none;
   -webkit-user-drag: none;
+}
+
+/* Light mode (default) */
+:root {
+  --text-color: #000; /* black for light mode */
+}
+
+/* Dark mode */
+@media (prefers-color-scheme: dark) {
+  :root {
+    --text-color: #fff; /* white for dark mode */
+  }
 }
 
 /* --- MAIN HEADING --- */
